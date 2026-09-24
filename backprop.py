@@ -12,3 +12,6 @@ class Value:
 
     def __mul__(self, other):
         return Value(self.value * other.value, parents=[self, other], operation='*')
+
+    def __relu__(self):
+        return Value(max(0, self.value), parents=[self], operation='relu')
