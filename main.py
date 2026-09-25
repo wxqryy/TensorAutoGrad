@@ -33,3 +33,9 @@ def build_topo(v):
     topo.append(v)
 
 build_topo(L)
+
+for v in reversed(topo):
+    v._backward()
+
+for i in net.parameters():
+    print(f"{i.value} | {i.grad}")

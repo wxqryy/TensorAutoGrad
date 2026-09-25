@@ -26,3 +26,24 @@ class Value:
 
     def relu(self):
         return Value(max(0, self.value), parents=[self], operation='relu')
+
+    def _backward(self):
+        if self.operation == "+":
+            for p in self.parents:
+                p.grad += self. grad * 1
+        elif self.operation == "*":
+            self.parents[0].grad += self.grad * self.parents[1].value
+            self.parents[1].grad += self.grad * self.parents[0].value
+        elif self.operation == "relu":
+            if self.parents[0].value < 0:
+                self.parents[0].grad += self.grad * 0
+            else:
+                self.parents[0].grad += self.grad * 1
+        elif self.operation == '-':
+            self.parents[0].grad += self.grad * 1
+            self.parents[1].grad += self.grad * -1
+        elif self.operation == '/':
+            self.parents[0].grad += self.grad / self.parents[1].value
+            self.parents[1].grad += self.grad / (-self.parents[0].value / (self.parents[1].value**2))
+        elif self.operation == 'square':
+            self.parents[0].grad += self.grad * 2 * self.parents[0].value
