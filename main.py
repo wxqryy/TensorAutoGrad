@@ -18,3 +18,18 @@ diff = prediction - y
 L = diff.square()
 L = L / Value(2)
 L.grad = 1.0
+
+topo = []
+visited = set()
+def build_topo(v):
+    if v in visited:
+        return
+
+    visited.add(v)
+
+    for parent in v.parents:
+        build_topo(parent)
+
+    topo.append(v)
+
+build_topo(L)
