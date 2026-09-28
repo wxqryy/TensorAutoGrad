@@ -1,41 +1,38 @@
 import mlp
-from backprop import Value
+from backprop import Tensor
+
 
 net = mlp.MLP()
 
-inputs = [
-    Value(1),
-    Value(2),
-    Value(1.5),
-    Value(0.4),
-    Value(3)
-]
+inputs = Tensor([
+    1,
+    2,
+    1.5,
+    0.4,
+    3
+])
 
-y = Value(0.5)
+y = Tensor([0.5])
 prediction = net(inputs)
-
 diff = prediction - y
-L = diff.square()
-L = L / Value(2)
-L.grad = 1.0
+loss = diff.square().mean()
 
-topo = []
-visited = set()
-def build_topo(v):
-    if v in visited:
-        return
+loss.backward()
 
-    visited.add(v)
-
-    for parent in v.parents:
-        build_topo(parent)
-
-    topo.append(v)
-
-build_topo(L)
-
-for v in reversed(topo):
-    v._backward()
-
-for i in net.parameters():
-    print(f"{i.value} | {i.grad}")
+for i, parameter in enumerate(net.parameters()):
+    if i%2==0:
+        print(f"\nweights {(i+2)//2}")
+    else:
+        print(f"\nbiases {(i + 2) // 2}")
+    print("data:")
+    for i in parameter.data:
+        if isinstance(i, list):
+            print(" | ".join(map(lambda x: f"{x:.15f}" if x < 0 else f" {x:.15f}", i)))
+        else:
+            print(" | ".join(map(str, parameter.data)))
+    print("grad:")
+    for i in parameter.grad:
+        if isinstance(i, list):
+            print(" | ".join(map(lambda x: f"{x:.15f}" if x < 0 else f" {x:.15f}", i)))
+        else:
+            print(" | ".join(map(str, parameter.grad)))
