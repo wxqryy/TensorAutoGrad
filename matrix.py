@@ -46,3 +46,17 @@ def zeros_like(a):
     if isinstance(a[0], list):
         return [[0.0 for _ in row] for row in a]
     return [0.0 for _ in a]
+
+def outer(vec_a, vec_b):
+    return [[a * b for b in vec_b]for a in vec_a]
+
+def add_matrix(a, b):
+    if len(a) != len(b):
+        return 0
+    result = []
+
+    for row_a, row_b in zip(a, b):
+        if len(row_a) != len(row_b):
+            return 0
+        result.append([x + y for x, y in zip(row_a, row_b)])
+    return result
