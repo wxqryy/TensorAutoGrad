@@ -110,6 +110,9 @@ class Tensor:
                 build_topo(parent)
             topo.append(v)
         build_topo(self)
+        for v in topo:
+            if v.parents:
+                v.zero_grad()
         self.grad = 1.0
         for v in reversed(topo):
             v._backward()
